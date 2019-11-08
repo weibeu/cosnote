@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 
 
 app = Flask(__name__)
@@ -14,7 +14,7 @@ db = db_client["Quick-Notes"]
 
 @app.route('/')
 def index():
-    return "F"
+    return render_template("index.html")
 
 
 def __save_note(username, note):
@@ -24,14 +24,26 @@ def __save_note(username, note):
 
 
 def __get_note(username):
-    return db.notes.find_one({"username": username}, {"_id": False})
+    return db.notes.find_one({"username": username}, {"_id": False, "pin": False})
+
+
+def __check_username(username):
+    if db.notes.find_one({"username": username}):
+        return False
+    return True
+
+
+def __get_pin(username):
+    return db.notes.find_one({"username": username}, {"_id": False, "pin": True})["pin"]
 
 
 @app.route('/<username>/', methods=["GET", "POST"])
 def user_notes(username):
+    json = request.get_json()
+    if "pin" not in json or not json["pin"] == __get_pin(username):
+        abort(400)    # Wrong PIN.
     if request.method == "POST":
-        json = request.get_json()
         if not json or "note" not in json:
-            abort(400)
+            abort(401)
         __save_note(username, json["note"])
     return __get_note(username) or abort(404)
