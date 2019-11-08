@@ -20,7 +20,7 @@ def index():
 def __save_note(username, note):
     db.notes.update_one({"username": username}, {
         "$set": {"note": note}
-    })
+    }, upsert=True)
 
 
 def __get_note(username):
