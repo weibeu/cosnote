@@ -27,7 +27,7 @@ def __get_note(username):
     return db.notes.find_one({"username": username}, {"_id": False, "pin": False})
 
 
-def __check_username(username):
+def __check_username_availability(username):
     if db.notes.find_one({"username": username}):
         return False
     return True
