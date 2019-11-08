@@ -17,17 +17,24 @@ def index():
     return render_template("index.html")
 
 
+def __register(username, pin, note=None):
+    document = {"username": username, "pin": pin}
+    if note:
+        document["note"] = note
+    db.notes.insert_one(document)
+
+
 def __save_note(username, note):
     db.notes.update_one({"username": username}, {
         "$set": {"note": note}
-    }, upsert=True)
+    })
 
 
 def __get_note(username):
     return db.notes.find_one({"username": username}, {"_id": False, "pin": False})
 
 
-def __check_username_availability(username):
+def __is_username_available(username):
     if db.notes.find_one({"username": username}):
         return False
     return True
@@ -39,11 +46,18 @@ def __get_pin(username):
 
 @app.route('/<username>/', methods=["GET", "POST"])
 def user_notes(username):
-    json = request.get_json()
-    if "pin" not in json or not json["pin"] == __get_pin(username):
-        abort(400)    # Wrong PIN.
-    if request.method == "POST":
-        if not json or "note" not in json:
-            abort(401)
-        __save_note(username, json["note"])
+    if not (json := request.get_json()):
+        abort(401)
+
+    if __is_username_available(username):    # New user.
+        __register(username, json["pin"], json.get("note"))
+    else:
+        if "pin" not in json or not json["pin"] == __get_pin(username):
+            abort(400)    # Wrong PIN.
+
+        if request.method == "POST":
+            if not json or "note" not in json:
+                abort(401)
+            __save_note(username, json["note"])
+
     return __get_note(username) or abort(404)
