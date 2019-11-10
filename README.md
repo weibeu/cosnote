@@ -1,1 +1,1 @@
-# Quick-Notes
+# instant-notes
