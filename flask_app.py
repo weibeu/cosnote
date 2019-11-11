@@ -50,7 +50,8 @@ class UserNotes(Resource):
         return db.notes.find_one({"username": username}, {"_id": False, "password": True})["password"]
 
     def post(self):
-        if not (json := request.get_json()):
+        json = request.get_json()
+        if not json:
             abort(400)
         username = json.get("username")
         password = json.get("password")
