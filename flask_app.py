@@ -24,10 +24,10 @@ class UserNotes(Resource):
 
     @staticmethod
     def __register(username, password, note=None):
-        document = {"username": username, "password": password}
+        document = {"password": password}
         if note:
             document["note"] = note
-        db.notes.insert_one(document)
+        db.notes.update_one({"username": username}, {"$set": document}, upsert=True)
 
     @staticmethod
     def __save_note(username, note):
@@ -52,18 +52,21 @@ class UserNotes(Resource):
     def post(self):
         if not (json := request.get_json()):
             abort(400)
-        if ("username" not in json) or ("password" not in json):
+        username = json.get("username")
+        password = json.get("password")
+        note = json.get("note")
+        if not username:
+            abort(400)
+        if not password:
             abort(400)
 
-        username = json["username"]
-
         if self.__is_username_available(username):  # New user.
-            self.__register(username, json["password"], json.get("note"))
+            self.__register(username, password, note)
         else:
-            if "password" not in json or not json["password"] == self.__get_password(username):
+            if not password == self.__get_password(username):
                 abort(401)  # Wrong password.
 
-            if note := json.get("note"):
+            if note:
                 self.__save_note(username, note)
 
         return self.__get_note(username) or abort(404)
