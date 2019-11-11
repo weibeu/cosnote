@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort
 
 
 app = Flask(__name__)
@@ -10,11 +10,6 @@ db_client = MongoClient("mongodb://thecosmos:I2vhyffcplsVoAbr@tc-discord-bot-sha
                         "tc-discord-bot-shard-00-02-i4l5o.mongodb.net:27017/test?ssl=true&replicaSet=tc-discord-bot"
                         "-shard-0&authSource=admin")
 db = db_client["instant-notes"]
-
-
-@app.route('/')
-def index():
-    return render_template("index.html")
 
 
 def __register(username, password, note=None):
@@ -44,10 +39,14 @@ def __get_password(username):
     return db.notes.find_one({"username": username}, {"_id": False, "password": True})["password"]
 
 
-@app.route('/<username>/', methods=["GET", "POST"])
-def user_notes(username):
+@app.route('/', methods=["POST"])
+def user_notes():
     if not (json := request.get_json()):
         abort(401)
+    if ("username" not in json) or ("password" not in json):
+        abort(401)
+
+    username = json["username"]
 
     if __is_username_available(username):    # New user.
         __register(username, json["password"], json.get("note"))
@@ -55,9 +54,7 @@ def user_notes(username):
         if "password" not in json or not json["password"] == __get_password(username):
             abort(400)    # Wrong password.
 
-        if request.method == "POST":
-            if not json or "note" not in json:
-                abort(401)
-            __save_note(username, json["note"])
+        if note := json.get("note"):
+            __save_note(username, note)
 
     return __get_note(username) or abort(404)
