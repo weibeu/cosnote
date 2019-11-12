@@ -112,7 +112,8 @@ class ShareNote(Resource):
 
 @app.route('/shared/<uri>/')
 def get_shared_note(uri):
-    return db.sharedNotes.find_one({"uri": uri}, {"_id": False}) or abort(404)
+    payload = db.sharedNotes.find_one({"uri": uri}, {"_id": False}) or abort(404)
+    return render_template("index.html", shared=payload)
 
 
 api.add_resource(UserNotes, UserNotes.BASE_URL)
