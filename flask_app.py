@@ -1,3 +1,6 @@
+import random
+import string
+
 from pymongo import MongoClient
 
 from flask_cors import CORS
@@ -21,6 +24,8 @@ def index():
 
 
 class UserNotes(Resource):
+
+    BASE_URL = "/api/"
 
     @staticmethod
     def __register(username, password, note=None):
@@ -73,4 +78,42 @@ class UserNotes(Resource):
         return self.__get_note(username) or abort(404)
 
 
-api.add_resource(UserNotes, "/api/")
+class ShareNote(Resource):
+
+    BASE_URL = "/api/share/"
+
+    @staticmethod
+    def __get_random_uri():
+        return str().join(random.choices(string.ascii_letters + string.digits, k=7))
+
+    def post(self):
+        json = request.get_json()
+        if not json:
+            abort(400)
+        username = json.get("username")
+        password = json.get("password")
+        if not username:
+            abort(400)
+        if not password:
+            abort(400)
+
+        note = db.notes.find_one({"username": username, "password": password}, {"note": True, "_id": False}).get("note")
+        if not note:
+            abort(404)
+        uri = self.__get_random_uri()
+        db.sharedNotes.update_one({"username": username}, {"$set": {
+            "note": note,
+            "uri": uri
+        }}, upsert=True)
+        return {
+            "share_url": f"{request.base_url.replace(self.BASE_URL, str())}/shared/{uri}/"
+        }
+
+
+@app.route('/shared/<uri>/')
+def get_shared_note(uri):
+    return db.sharedNotes.find_one({"uri": uri}, {"_id": False}) or abort(404)
+
+
+api.add_resource(UserNotes, UserNotes.BASE_URL)
+api.add_resource(ShareNote, ShareNote.BASE_URL)
