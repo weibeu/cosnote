@@ -10,7 +10,7 @@ from flask import Flask, request, abort, render_template, session
 app = Flask(__name__)
 cors = CORS(app)
 api = Api(app)
-app.secret_key = b'\x86\xf0\x15s\xa4\x84\x91\xd1\x95\x131\xe2\xa9f<['
+app.secret_key = b"'\x14Q\x17\xda\xc6\x8f\x01V\x9et\xdf\x81\xa0$m"
 db_client = MongoClient("mongodb://thecosmos:I2vhyffcplsVoAbr@tc-discord-bot-shard-00-00-i4l5o.mongodb.net:27017,"
                         "tc-discord-bot-shard-00-01-i4l5o.mongodb.net:27017,"
                         "tc-discord-bot-shard-00-02-i4l5o.mongodb.net:27017/test?ssl=true&replicaSet=tc-discord-bot"
@@ -65,7 +65,6 @@ class UserNotes(Resource):
 
     def post(self):
         username, password, note = get_user_info()
-
         if self.__is_username_available(username):    # New user.
             # No password check for new users.
             update_session(username=username, password=password)
