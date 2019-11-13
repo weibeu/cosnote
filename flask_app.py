@@ -110,6 +110,16 @@ class ShareNote(Resource):
         }
 
 
+class RevokeAuth(Resource):
+
+    BASE_URL = "/api/revoke/"
+
+    @staticmethod
+    def delete():
+        session.clear()
+        return dict(), 200
+
+
 @app.route('/shared/<uri>/')
 def get_shared_note(uri):
     payload = db.sharedNotes.find_one({"uri": uri}, {"_id": False}) or abort(404)
@@ -118,3 +128,4 @@ def get_shared_note(uri):
 
 api.add_resource(UserNotes, UserNotes.BASE_URL)
 api.add_resource(ShareNote, ShareNote.BASE_URL)
+api.add_resource(RevokeAuth, RevokeAuth.BASE_URL)
