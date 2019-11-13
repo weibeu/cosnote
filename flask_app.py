@@ -24,7 +24,7 @@ def index():
 
 
 def get_user_info():
-    json = request.get_json()
+    json = request.get_json() or dict()
     username = json.get("username") or session.get("username")
     password = json.get("password") or session.get("password")
     if not username:
