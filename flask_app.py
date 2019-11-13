@@ -31,9 +31,11 @@ def get_user_info():
         abort(400)
     if not password:
         abort(400)
-    session["username"] = username
-    session["password"] = password
     return username, password, json.get("note")
+
+
+def update_session(**kwargs):
+    session.update(kwargs)
 
 
 class UserNotes(Resource):
@@ -66,11 +68,12 @@ class UserNotes(Resource):
 
         if self.__is_username_available(username):    # New user.
             # No password check for new users.
+            update_session(username=username, password=password)
             self.__save_note(username, password, note)
         else:
             if not password == self.__get_password(username):
                 abort(401)  # Wrong password.
-
+            update_session(username=username, password=password)
             self.__save_note(username, password, note)
 
         return self.__get_note(username) or abort(404)
