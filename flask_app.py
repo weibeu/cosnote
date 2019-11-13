@@ -25,8 +25,8 @@ def index():
 
 def get_user_info():
     json = request.get_json() or dict()
-    username = json.get("username") or session.get("username")
-    password = json.get("password") or session.get("password")
+    username = json.get("username")
+    password = json.get("password")
     if not username:
         abort(400)
     if not password:
@@ -76,6 +76,14 @@ class UserNotes(Resource):
             self.__save_note(username, password, note)
 
         return self.__get_note(username) or abort(404)
+
+    @staticmethod
+    def get():
+        username = session.get("username", str())
+        password = session.get("password", str())
+        if not (username and password):
+            abort(400)
+        return dict(username=username, password=password)
 
 
 class ShareNote(Resource):
