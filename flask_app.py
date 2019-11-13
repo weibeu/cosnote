@@ -31,6 +31,8 @@ def get_user_info():
         abort(400)
     if not password:
         abort(400)
+    session["username"] = username
+    session["password"] = password
     return username, password, json.get("note")
 
 
