@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from flask_cors import CORS
 from flask_restful import Api, Resource
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort, render_template, session
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -23,22 +23,29 @@ def index():
     return render_template("index.html")
 
 
+def get_user_info():
+    json = request.get_json()
+    if not json:
+        abort(400)
+    username = json.get("username") or session.get("username")
+    password = json.get("password") or session.get("password")
+    if not username:
+        abort(400)
+    if not password:
+        abort(400)
+    return username, password, json.get("note")
+
+
 class UserNotes(Resource):
 
     BASE_URL = "/api/"
 
     @staticmethod
-    def __register(username, password, note=None):
+    def __save_note(username, password, note=None):
         document = {"password": password}
         if note:
             document["note"] = note
         db.notes.update_one({"username": username}, {"$set": document}, upsert=True)
-
-    @staticmethod
-    def __save_note(username, note):
-        db.notes.update_one({"username": username}, {
-            "$set": {"note": note}
-        })
 
     @staticmethod
     def __get_note(username):
@@ -55,25 +62,16 @@ class UserNotes(Resource):
         return db.notes.find_one({"username": username}, {"_id": False, "password": True})["password"]
 
     def post(self):
-        json = request.get_json()
-        if not json:
-            abort(400)
-        username = json.get("username")
-        password = json.get("password")
-        note = json.get("note")
-        if not username:
-            abort(400)
-        if not password:
-            abort(400)
+        username, password, note = get_user_info()
 
-        if self.__is_username_available(username):  # New user.
-            self.__register(username, password, note)
+        if self.__is_username_available(username):    # New user.
+            # No password check for new users.
+            self.__save_note(username, password, note)
         else:
             if not password == self.__get_password(username):
                 abort(401)  # Wrong password.
 
-            if note:
-                self.__save_note(username, note)
+            self.__save_note(username, password, note)
 
         return self.__get_note(username) or abort(404)
 
@@ -87,19 +85,11 @@ class ShareNote(Resource):
         return str().join(random.choices(string.ascii_letters + string.digits, k=7))
 
     def post(self):
-        json = request.get_json()
-        if not json:
-            abort(400)
-        username = json.get("username")
-        password = json.get("password")
-        if not username:
-            abort(400)
-        if not password:
-            abort(400)
+        username, password, _ = get_user_info()
 
         note = db.notes.find_one({"username": username, "password": password}, {"note": True, "_id": False}).get("note")
         if not note:
-            abort(404)
+            abort(404)    # That user hasn't created any note yet.
         uri = self.__get_random_uri()
         db.sharedNotes.update_one({"username": username}, {"$set": {
             "note": note,
