@@ -11,7 +11,7 @@ from flask import Flask, request, abort, render_template, session
 app = Flask(__name__)
 cors = CORS(app)
 api = Api(app)
-app.secret_key = b"'\x14Q\x17\xda\xc6\x8f\x01V\x9et\xdf\x81\xa0$m"
+app.config.from_envvar('INSTANT_NOTES_CONFIG')
 db_client = MongoClient(os.environ.get("MONGODB_URI"))
 db = db_client["instant-notes"]
 
@@ -25,9 +25,7 @@ def get_user_info():
     json = request.get_json() or dict()
     username = json.get("username")
     password = json.get("password")
-    if not username:
-        abort(400)
-    if not password:
+    if not (username and password):
         abort(400)
     return username, password, json.get("note")
 

@@ -1,3 +1,6 @@
+# Don't store the real config in git by accident
+config.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
