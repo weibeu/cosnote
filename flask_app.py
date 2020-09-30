@@ -9,7 +9,6 @@ from flask_restful import Api, Resource
 from flask import Flask, request, abort, render_template, session
 from flask_bcrypt import Bcrypt
 
-
 app = Flask(__name__)
 cors = CORS(app)
 api = Api(app)
@@ -77,7 +76,6 @@ class UserNotes(Resource):
                 abort(401)  # Wrong password.
             update_session(username=username, password=pw_hash)
             self.__save_note(username, pw_hash, note)
-
         return self.__get_note(username) or abort(404)
 
     @staticmethod
