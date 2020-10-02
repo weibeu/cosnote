@@ -7,10 +7,12 @@ from pymongo import MongoClient
 from flask_cors import CORS
 from flask_restful import Api, Resource
 from flask import Flask, request, abort, render_template, session
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 cors = CORS(app)
 api = Api(app)
+bcrypt = Bcrypt(app)
 app.secret_key = b"'\x14Q\x17\xda\xc6\x8f\x01V\x9et\xdf\x81\xa0$m"
 db_client = MongoClient(os.environ.get("MONGODB_URI"))
 db = db_client["instant-notes"]
@@ -63,16 +65,17 @@ class UserNotes(Resource):
 
     def post(self):
         username, password, note = get_user_info()
+        pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         if self.__is_username_available(username):    # New user.
             # No password check for new users.
-            update_session(username=username, password=password)
-            self.__save_note(username, password, note)
+            update_session(username=username, password=pw_hash)
+            self.__save_note(username, pw_hash, note)
         else:
-            if not password == self.__get_password(username):
+            decoded = self.__get_password(username)
+            if not bcrypt.check_password_hash(decoded, password):
                 abort(401)  # Wrong password.
-            update_session(username=username, password=password)
-            self.__save_note(username, password, note)
-
+            update_session(username=username, password=pw_hash)
+            self.__save_note(username, pw_hash, note)
         return self.__get_note(username) or abort(404)
 
     @staticmethod
