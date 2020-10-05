@@ -1,5 +1,16 @@
+import re
+
 from app import bcrypt, utils
 from mongoengine import StringField
+
+
+class UsernameField(StringField):
+
+    USERNAME_REGEX = re.compile(r"(?=.{4,20}$)(?![.])(?!.*[.]{2})[a-zA-Z0-9_]+(?<![.])")
+
+    def validate(self, value):
+        super().validate(value)
+        return bool(self.USERNAME_REGEX.match(value))
 
 
 class PasswordField(StringField):

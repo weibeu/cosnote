@@ -1,6 +1,8 @@
-from mongoengine import Document, StringField, EmbeddedDocument, EmbeddedDocumentField, BooleanField
-
+from ..fields import UsernameField
 from ..fields import PasswordField
+
+from mongoengine import Document, EmbeddedDocument
+from mongoengine import EmbeddedDocumentField, BooleanField
 
 
 class UserPreferences(EmbeddedDocument):
@@ -10,6 +12,6 @@ class UserPreferences(EmbeddedDocument):
 
 class User(Document):
 
-    username = StringField(minimum_length=5, max_length=20, primary_key=True)
+    username = UsernameField(minimum_length=5, max_length=20, primary_key=True)
     password = PasswordField()
     preferences = EmbeddedDocumentField(UserPreferences, default=UserPreferences)
