@@ -1,6 +1,6 @@
 Flask
-flask_restful
 flask_cors
-pymongo
+mongoengine
 gunicorn
 flask_bcrypt
+python-dotenv
