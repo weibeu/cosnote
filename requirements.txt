@@ -1,7 +1,6 @@
 Flask
 gunicorn
 flask_cors
-flask-restx
 mongoengine
 marshmallow
 flask_bcrypt
