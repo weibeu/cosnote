@@ -3,7 +3,7 @@ from app.utils import format_bad_request
 import functools
 import marshmallow
 
-from flask import views, request, jsonify, session
+from flask import views, request, jsonify, session, Response
 
 
 def requires_authorization(view):
@@ -18,6 +18,7 @@ def requires_authorization(view):
 class SerializerBaseSchema(marshmallow.Schema):
 
     SERIALIZE_TO = dict
+    errors = marshmallow.fields.Dict()
 
     @marshmallow.post_load
     def make_instance(self, data, **_kwargs):
@@ -58,6 +59,9 @@ class BaseView(views.MethodView, metaclass=__MetaView):
             ret = super().dispatch_request(*args, **kwargs)
         else:
             ret = super().dispatch_request(*args, **kwargs, instance=instance)
+
+        if isinstance(ret, Response) or (isinstance(ret, tuple) and isinstance(ret[0], Response)):
+            return ret
 
         try:
             return self.RESPONSE_SERIALIZER().dump(ret)
