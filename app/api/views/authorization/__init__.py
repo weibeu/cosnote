@@ -1,20 +1,9 @@
-from flask import abort, jsonify, session
+from flask import jsonify, session
 from app.resource import models
-
-import functools
 
 from .serializers import RegisterSchema
 from .. import BaseView
 from ..user.serializer import UserSchema
-
-
-def requires_authorization(view):
-    @functools.wraps(view)
-    def decorator(*args, **kwargs):
-        if not session.get("username"):
-            abort(401)
-        return view(*args, **kwargs)
-    return decorator
 
 
 class Register(BaseView):

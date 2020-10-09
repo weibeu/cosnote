@@ -1,4 +1,4 @@
-from .authorization import requires_authorization
+from .. import requires_authorization
 
 import marshmallow
 
@@ -25,13 +25,14 @@ class __MetaView(views.MethodViewType):
     decorators = []
     REQUIRES_AUTHORIZATION = False
 
-    def __init__(cls, *args, **kwargs):
-        if not cls.ROUTE:
-            raise NotImplementedError("View class should define a valid route as endpoint.")
-        if cls.REQUIRES_AUTHORIZATION:
-            cls.decorators.append(requires_authorization)
-        super().__init__(*args, **kwargs)
-        cls.NAME = cls.__name__.lower() if not cls.NAME else cls.NAME
+    def __init__(cls, name, *args, **kwargs):
+        if name != "BaseView":
+            if not cls.ROUTE:
+                raise NotImplementedError("View class should define a valid route as endpoint.")
+            if cls.REQUIRES_AUTHORIZATION:
+                cls.decorators.append(requires_authorization)
+            cls.NAME = cls.__name__.lower() if not cls.NAME else cls.NAME
+        super().__init__(name, *args, **kwargs)
 
 
 class BaseView(views.MethodView, metaclass=__MetaView):
