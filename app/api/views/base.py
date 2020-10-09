@@ -48,9 +48,8 @@ class BaseView(views.MethodView, metaclass=__MetaView):
         return super().as_view(cls.NAME, *args, **kwargs)
 
     def dispatch_request(self, *args, **kwargs):
-        json = request.get_json()
         try:
-            instance = self.REQUEST_SERIALIZER().load(**json)
+            instance = self.REQUEST_SERIALIZER().load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
             return jsonify(errors=exc.messages), 400
         except TypeError:
