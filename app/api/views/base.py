@@ -1,3 +1,5 @@
+from app.utils import format_bad_request
+
 import functools
 import marshmallow
 
@@ -51,7 +53,7 @@ class BaseView(views.MethodView, metaclass=__MetaView):
         try:
             instance = self.REQUEST_SERIALIZER().load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
-            return jsonify(errors=exc.messages), 400
+            return format_bad_request(exc=exc)
         except TypeError:
             ret = super().dispatch_request(*args, **kwargs)
         else:

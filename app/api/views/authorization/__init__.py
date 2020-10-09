@@ -1,5 +1,6 @@
 from flask import jsonify, session
 from app.resource import models
+from app.utils import format_bad_request
 
 import mongoengine
 
@@ -19,12 +20,12 @@ class Register(BaseView):
     def post(*, instance):
         user = models.User.objects(username=instance["username"]).first()
         if user:
-            return jsonify(errors=dict(username="Specified username is already registered.")), 400
+            return format_bad_request(message="Specified username is already registered.")
         user = models.User(**instance)
         try:
             user.save()
         except mongoengine.ValidationError as exc:
-            return jsonify(errors=exc["errors"]), 400
+            return format_bad_request(exc=exc)
         session["username"] = user.username
         return user
 
