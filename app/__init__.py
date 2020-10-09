@@ -1,6 +1,3 @@
-from . import api
-from . import resource
-
 from flask import Flask
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -10,6 +7,9 @@ bcrypt = Bcrypt()
 
 
 def get_app(configs=None):
+    from . import api
+    from . import resource
+
     app = Flask(__name__)
     app.config.from_object(configs)
 
