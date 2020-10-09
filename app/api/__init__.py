@@ -1,8 +1,6 @@
-from .decorators import requires_authorization
+from flask import Blueprint
 
 from . import views
-
-from flask import Blueprint
 
 
 version = "1.0.0"
