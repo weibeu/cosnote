@@ -83,6 +83,9 @@ class NoteMetadata(EmbeddedDocument):
 
 class Note(Document):
 
+    _id = ObjectIdField(primary_key=True)
     title = StringField(required=True)
     content = StringField(required=True)
     metadata = EmbeddedDocumentField(NoteMetadata, default=NoteMetadata)
+
+    user = ReferenceField("User", required=True, unique_with="_id")
