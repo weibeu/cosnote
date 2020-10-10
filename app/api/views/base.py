@@ -29,7 +29,7 @@ class SerializerBaseSchema(marshmallow.Schema):
         if isinstance(self.SERIALIZE_TO_OBJECT, mongoengine.Document):
             # noinspection PyProtectedMember
             instance = self.SERIALIZE_TO_OBJECT.objects(**{
-                pk: data[pk] for pk in self.SERIALIZE_TO_OBJECT._fields
+                pk: data[pk] for pk, f in self.SERIALIZE_TO_OBJECT._fields.items() if f.primary_key
             }).first()
         return instance, data
 
