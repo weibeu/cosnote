@@ -17,7 +17,7 @@ class Register(BaseView):
     RESPONSE_SERIALIZER = UserSchema
 
     @staticmethod
-    def post(*, instance, data):
+    def post(instance, data):
         if instance:
             return format_bad_request(message="Specified username is already registered.")
         user = models.User(**data)
