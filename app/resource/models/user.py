@@ -16,3 +16,6 @@ class User(Document):
     email = EmailField()
     password = PasswordField()
     preferences = EmbeddedDocumentField(UserPreferences, default=UserPreferences)
+
+    def authorize(self, password):
+        return PasswordField.verify(self.password, password)
