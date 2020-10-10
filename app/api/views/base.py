@@ -12,6 +12,10 @@ def save_session(username, permanent=True):
     session.permanent = bool(permanent)
 
 
+def revoke_session():
+    session.pop(get_username(), None)
+
+
 def get_username():
     return session.get("username")
 

@@ -3,9 +3,9 @@ from app.resource import models
 
 import mongoengine
 
-from .. import BaseView, save_session
 from .serializers import RegisterSchema
 from ..user.serializer import UserSchema
+from .. import BaseView, save_session, revoke_session
 
 
 class Register(BaseView):
@@ -43,3 +43,14 @@ class Authorize(BaseView):
             return format_bad_request(message="The password you entered isn't correct. Please try again.")
         save_session(instance.username)
         return instance
+
+
+class Revoke(BaseView):
+
+    ROUTE = "/revoke/"
+    REQUIRES_AUTHORIZATION = True
+
+    @staticmethod
+    def post():
+        revoke_session()
+        return dict()
