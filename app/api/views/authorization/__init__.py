@@ -31,3 +31,15 @@ class Register(BaseView):
 class Authorize(BaseView):
 
     ROUTE = "/authorize/"
+
+    REQUEST_SERIALIZER = RegisterSchema
+    RESPONSE_SERIALIZER = UserSchema
+
+    @staticmethod
+    def post(instance, data):
+        if not instance:
+            return format_bad_request(message="No account exists with specified username.", status=404)
+        if not instance.authorize(data["password"]):
+            return format_bad_request(message="The password you entered isn't correct. Please try again.")
+        save_session(instance.username)
+        return instance
