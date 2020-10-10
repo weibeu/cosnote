@@ -1,10 +1,9 @@
 from app.utils import format_bad_request
-from flask import session
 from app.resource import models
 
 import mongoengine
 
-from .. import BaseView
+from .. import BaseView, save_session
 from .serializers import RegisterSchema
 from ..user.serializer import UserSchema
 
@@ -25,7 +24,7 @@ class Register(BaseView):
             user.save()
         except mongoengine.ValidationError as exc:
             return format_bad_request(exc=exc)
-        session["username"] = user.username
+        save_session(user.username)
         return user
 
 
