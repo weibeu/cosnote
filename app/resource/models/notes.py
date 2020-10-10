@@ -83,6 +83,6 @@ class NoteMetadata(EmbeddedDocument):
 
 class Note(Document):
 
-    title = StringField()
+    title = StringField(required=True)
     content = StringField(required=True)
     metadata = EmbeddedDocumentField(NoteMetadata, default=NoteMetadata)
