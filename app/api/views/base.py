@@ -4,14 +4,23 @@ import functools
 import mongoengine
 import marshmallow
 
-from flask import views, request, jsonify, session, Response
+from flask import views, request, session, Response
+
+
+def save_session(username, permanent=True):
+    session["username"] = username
+    session.permanent = bool(permanent)
+
+
+def get_username():
+    return session.get("username")
 
 
 def requires_authorization(view):
     @functools.wraps(view)
     def decorator(*args, **kwargs):
-        if not session.get("username"):
-            jsonify(errors=dict(message="Unauthorized"))
+        if not get_username():
+            return format_bad_request(message="Unauthorized.", status=401)
         return view(*args, **kwargs)
     return decorator
 
