@@ -26,7 +26,7 @@ class SerializerBaseSchema(marshmallow.Schema):
         instance = None
         if self.SERIALIZE_TO_OBJECT is dict:
             instance = self.SERIALIZE_TO_OBJECT(**data)
-        if isinstance(self.SERIALIZE_TO_OBJECT, mongoengine.Document):
+        if issubclass(self.SERIALIZE_TO_OBJECT, mongoengine.Document):
             # noinspection PyProtectedMember
             instance = self.SERIALIZE_TO_OBJECT.objects(**{
                 pk: data[pk] for pk, f in self.SERIALIZE_TO_OBJECT._fields.items() if f.primary_key
