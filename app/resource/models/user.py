@@ -14,5 +14,5 @@ class User(Document):
 
     username = UsernameField(minimum_length=5, max_length=20, primary_key=True)
     email = EmailField()
-    password = PasswordField(required=True)
+    password = PasswordField()
     preferences = EmbeddedDocumentField(UserPreferences, default=UserPreferences)
