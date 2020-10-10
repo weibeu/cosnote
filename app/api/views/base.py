@@ -46,7 +46,6 @@ class SerializerBaseSchema(marshmallow.Schema):
 class __MetaView(views.MethodViewType):
 
     NAME = ROUTE = str()
-    decorators = []
     REQUIRES_AUTHORIZATION = False
 
     def __init__(cls, name, *args, **kwargs):
@@ -54,7 +53,7 @@ class __MetaView(views.MethodViewType):
             if not cls.ROUTE:
                 raise NotImplementedError("View class should define a valid route as endpoint.")
             if cls.REQUIRES_AUTHORIZATION:
-                cls.decorators.append(requires_authorization)
+                cls.decorators = (requires_authorization, *cls.decorators)
             cls.NAME = cls.__name__.lower() if not cls.NAME else cls.NAME
         super().__init__(name, *args, **kwargs)
 
