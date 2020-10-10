@@ -10,12 +10,12 @@ from collections import UserString
 SLUG_REGEX = re.compile(r"^[-\w]+$")
 
 
-def format_bad_request(exc=None, **kwargs):
+def format_bad_request(exc=None, status=400, **kwargs):
     if isinstance(exc, marshmallow.ValidationError):
         kwargs = {k: v[0] for k, v in exc.messages.items()}
     if isinstance(exc, mongoengine.ValidationError):
         kwargs = {k: v.message for k, v in exc.errors.items()}
-    return jsonify(errors=kwargs), 400
+    return jsonify(errors=kwargs), status
 
 
 class Slug(UserString):
