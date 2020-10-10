@@ -1,6 +1,7 @@
 from app.utils import format_bad_request
 
 import functools
+import mongoengine
 import marshmallow
 
 from flask import views, request, jsonify, session, Response
@@ -17,12 +18,20 @@ def requires_authorization(view):
 
 class SerializerBaseSchema(marshmallow.Schema):
 
-    SERIALIZE_TO = dict
+    SERIALIZE_TO_OBJECT = dict
     errors = marshmallow.fields.Dict()
 
     @marshmallow.post_load
     def make_instance(self, data, **_kwargs):
-        return self.SERIALIZE_TO(**data)
+        instance = None
+        if self.SERIALIZE_TO_OBJECT is dict:
+            instance = self.SERIALIZE_TO_OBJECT(**data)
+        if isinstance(self.SERIALIZE_TO_OBJECT, mongoengine.Document):
+            # noinspection PyProtectedMember
+            instance = self.SERIALIZE_TO_OBJECT.objects(**{
+                pk: data[pk] for pk in self.SERIALIZE_TO_OBJECT._fields
+            }).first()
+        return instance, data
 
 
 class __MetaView(views.MethodViewType):
@@ -52,13 +61,13 @@ class BaseView(views.MethodView, metaclass=__MetaView):
 
     def dispatch_request(self, *args, **kwargs):
         try:
-            instance = self.REQUEST_SERIALIZER().load(request.get_json() or dict())
+            instance, data = self.REQUEST_SERIALIZER().load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
             return format_bad_request(exc=exc)
         except TypeError:
             ret = super().dispatch_request(*args, **kwargs)
         else:
-            ret = super().dispatch_request(*args, **kwargs, instance=instance)
+            ret = super().dispatch_request(*args, **kwargs, instance=instance, data=data)
 
         if isinstance(ret, Response) or (isinstance(ret, tuple) and isinstance(ret[0], Response)):
             return ret

@@ -1,6 +1,6 @@
-from flask import jsonify, session
-from app.resource import models
 from app.utils import format_bad_request
+from flask import session
+from app.resource import models
 
 import mongoengine
 
@@ -17,11 +17,10 @@ class Register(BaseView):
     RESPONSE_SERIALIZER = UserSchema
 
     @staticmethod
-    def post(*, instance):
-        user = models.User.objects(username=instance["username"]).first()
-        if user:
+    def post(*, instance, data):
+        if instance:
             return format_bad_request(message="Specified username is already registered.")
-        user = models.User(**instance)
+        user = models.User(**data)
         try:
             user.save()
         except mongoengine.ValidationError as exc:
