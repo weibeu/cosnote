@@ -1,4 +1,3 @@
-from .user import User
 from mongoengine import *
 
 
@@ -87,5 +86,3 @@ class Note(Document):
     title = StringField()
     content = StringField(required=True)
     # meta = EmbeddedDocumentField(NoteMeta, default=NoteMeta)
-
-    user = ListField(ReferenceField(User, reverse_delete_rule=CASCADE))
