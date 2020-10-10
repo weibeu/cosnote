@@ -76,7 +76,7 @@ SUPPORTED_LANGUAGES = [
 ]
 
 
-class NoteMeta(EmbeddedDocument):
+class NoteMetadata(EmbeddedDocument):
 
     language = StringField(required=True, default="text", choices=SUPPORTED_LANGUAGES)
 
@@ -85,4 +85,4 @@ class Note(Document):
 
     title = StringField()
     content = StringField(required=True)
-    # meta = EmbeddedDocumentField(NoteMeta, default=NoteMeta)
+    metadata = EmbeddedDocumentField(NoteMetadata, default=NoteMetadata)
