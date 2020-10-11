@@ -58,7 +58,7 @@ class SerializerBaseSchema(marshmallow.Schema):
 class __MetaView(views.MethodViewType):
 
     NAME = ROUTE = str()
-    REQUIRES_AUTHORIZATION = False
+    REQUIRES_AUTHORIZATION = True
 
     def __init__(cls, name, *args, **kwargs):
         if name != "BaseView":

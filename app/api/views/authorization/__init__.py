@@ -11,6 +11,7 @@ from .. import BaseView, save_session, revoke_session
 class Register(BaseView):
 
     ROUTE = "/register/"
+    REQUIRES_AUTHORIZATION = False
 
     REQUEST_SERIALIZER = RegisterSchema
     RESPONSE_SERIALIZER = UserSchema
@@ -31,6 +32,7 @@ class Register(BaseView):
 class Authorize(BaseView):
 
     ROUTE = "/authorize/"
+    REQUIRES_AUTHORIZATION = False
 
     REQUEST_SERIALIZER = RegisterSchema
     RESPONSE_SERIALIZER = UserSchema
@@ -48,7 +50,6 @@ class Authorize(BaseView):
 class Revoke(BaseView):
 
     ROUTE = "/revoke/"
-    REQUIRES_AUTHORIZATION = True
 
     @staticmethod
     def post():
