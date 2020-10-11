@@ -87,7 +87,7 @@ class BaseView(views.MethodView, metaclass=__MetaView):
         except TypeError:
             ret = super().dispatch_request(*args, **kwargs)
         else:
-            ret = super().dispatch_request(*args, instance, data, **kwargs)
+            ret = super().dispatch_request(instance, data, *args, **kwargs)
 
         if isinstance(ret, Response) or (isinstance(ret, tuple) and isinstance(ret[0], Response)):
             return ret
