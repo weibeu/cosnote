@@ -155,6 +155,6 @@ Returns the note object with specified note ID only **if it has been shared**. T
 }
 ```
 
-GET `/supported-languages/`
+#### GET `/supported-languages/`
 
 Basically returns list of all possible languages supported by the API.
