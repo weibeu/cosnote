@@ -7,7 +7,7 @@ from .serializers import NoteSerializer
 
 class SaveNote(BaseView):
 
-    ROUTE = "/notes/save/"
+    ROUTE = "/notes/"
 
     REQUEST_SERIALIZER = NoteSerializer
     RESPONSE_SERIALIZER = NoteSerializer
