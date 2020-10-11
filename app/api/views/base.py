@@ -5,7 +5,7 @@ import functools
 import mongoengine
 import marshmallow
 
-from flask import views, request, session, Response, g
+from flask import views, request, session, Response, g, jsonify
 
 
 def save_session(username, permanent=True):
@@ -82,6 +82,7 @@ class BaseView(views.MethodView, metaclass=__MetaView):
 
     REQUEST_SERIALIZER = None
     RESPONSE_SERIALIZER = None
+    SERIALIZER_KWARGS = dict()
 
     @classmethod
     def as_view(cls, *args, **kwargs):
@@ -89,7 +90,7 @@ class BaseView(views.MethodView, metaclass=__MetaView):
 
     def dispatch_request(self, *args, **kwargs):
         try:
-            serializer = self.REQUEST_SERIALIZER()
+            serializer = self.REQUEST_SERIALIZER(**self.SERIALIZER_KWARGS)
             instance = serializer.load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
             return format_bad_request(exc=exc)
@@ -102,6 +103,8 @@ class BaseView(views.MethodView, metaclass=__MetaView):
             return ret
 
         try:
-            return self.RESPONSE_SERIALIZER().dump(ret)
+            ret = self.RESPONSE_SERIALIZER(**self.SERIALIZER_KWARGS).dump(ret)
         except TypeError:
-            return ret
+            pass
+
+        return jsonify(ret)
