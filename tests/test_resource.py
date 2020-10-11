@@ -38,3 +38,9 @@ class TestNewDocuments(unittest.TestCase):
     def test_get_note(self):
         note = models.Note.objects(id="5f833b38e6a07361e4092c90").first()
         self.assertIsNotNone(note)
+
+    def test_get_shared_note(self):
+        note = models.Note.objects(
+            id="5f833b38e6a07361e4092c91", metadata__shared=True,
+        ).first()
+        self.assertIsNotNone(note)
