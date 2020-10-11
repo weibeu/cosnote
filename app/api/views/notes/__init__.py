@@ -5,9 +5,9 @@ from .. import BaseView
 from .serializers import NoteSerializer
 
 
-class UserNotes(BaseView):
+class SaveNote(BaseView):
 
-    ROUTE = "/notes/"
+    ROUTE = "/notes/save/"
 
     REQUEST_SERIALIZER = NoteSerializer
     RESPONSE_SERIALIZER = NoteSerializer
