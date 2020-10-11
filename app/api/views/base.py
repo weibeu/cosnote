@@ -54,6 +54,8 @@ class SerializerBaseSchema(marshmallow.Schema):
             instance = self.SERIALIZE_TO_OBJECT.objects(**{
                 pk: data[pk] for pk, f in self.SERIALIZE_TO_OBJECT._fields.items() if f.primary_key
             }).first()
+        if issubclass(self.SERIALIZE_TO_OBJECT, mongoengine.EmbeddedDocument):
+            instance = self.SERIALIZE_TO_OBJECT(**data)
         return instance
 
     @marshmallow.post_dump
