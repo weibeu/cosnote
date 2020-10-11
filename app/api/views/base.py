@@ -1,10 +1,11 @@
 from app.utils import format_bad_request
+from app.resource.models import User
 
 import functools
 import mongoengine
 import marshmallow
 
-from flask import views, request, session, Response
+from flask import views, request, session, Response, g
 
 
 def save_session(username, permanent=True):
@@ -20,11 +21,17 @@ def get_username():
     return session.get("username")
 
 
+def get_current_user():
+    return User.objects(username=get_username()).first()
+
+
 def requires_authorization(view):
     @functools.wraps(view)
     def decorator(*args, **kwargs):
-        if not get_username():
+        user = get_current_user()
+        if not user:
             return format_bad_request(message="Unauthorized.", status=401)
+        g.user = user
         return view(*args, **kwargs)
     return decorator
 
