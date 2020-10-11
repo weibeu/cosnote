@@ -1,5 +1,6 @@
 import unicodedata
 import re
+import collections
 import marshmallow
 import mongoengine
 
@@ -10,9 +11,18 @@ from collections import UserString
 SLUG_REGEX = re.compile(r"^[-\w]+$")
 
 
+def __get_error_message(instance):
+    default = "Something went wrong while validating this field."
+    if isinstance(instance, collections.Sequence):
+        return next(instance, default)
+    if isinstance(instance, collections.Mapping):
+        return next(iter(instance.values()), default)
+    return instance
+
+
 def format_bad_request(exc=None, status=400, **kwargs):
     if isinstance(exc, marshmallow.ValidationError):
-        kwargs = {k: v[0] for k, v in exc.messages.items()}
+        kwargs = {k: __get_error_message(v) for k, v in exc.messages.items()}
     if isinstance(exc, mongoengine.ValidationError):
         kwargs = {k: v.message for k, v in exc.errors.items()}
     return jsonify(errors=kwargs), status
