@@ -81,6 +81,7 @@ SUPPORTED_LANGUAGES = [
 class NoteMetadata(EmbeddedDocument):
 
     language = StringField(required=True, default="text", choices=SUPPORTED_LANGUAGES)
+    shared = BooleanField(required=True, default=False)
 
 
 class Note(BaseDocument):
