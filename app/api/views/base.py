@@ -88,8 +88,8 @@ class BaseView(views.MethodView, metaclass=__MetaView):
         return super().as_view(cls.NAME, *args, **kwargs)
 
     def dispatch_request(self, *args, **kwargs):
-        serializer = self.REQUEST_SERIALIZER()
         try:
+            serializer = self.REQUEST_SERIALIZER()
             instance = serializer.load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
             return format_bad_request(exc=exc)
