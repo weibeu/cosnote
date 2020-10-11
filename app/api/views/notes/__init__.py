@@ -1,4 +1,5 @@
-from app.resource.models import Note
+from app.utils import format_bad_request
+from app.resource import models
 from flask import g
 
 from .. import BaseView
@@ -14,7 +15,7 @@ class SaveNote(BaseView):
 
     @staticmethod
     def post(_instance, data):
-        note = Note(**data)
+        note = models.Note(**data)
         try:
             note.metadata = data["metadata"]
         except KeyError:
@@ -35,3 +36,18 @@ class UserNotes(BaseView):
     @staticmethod
     def get():
         return g.user.notes
+
+
+class Note(BaseView):
+
+    ROUTE = "/note/<string:note_id>/"
+    RESPONSE_SERIALIZER = NoteSerializer
+
+    @staticmethod
+    def get(note_id):
+        try:
+            return [n for n in g.user.notes if n.id.is_valid(note_id)][0]
+        except IndexError:
+            return format_bad_request(
+                message="No notes found for this user with specified ID.", status=404
+            )
