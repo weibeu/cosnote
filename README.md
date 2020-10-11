@@ -52,3 +52,91 @@ $ npm run build
 $ mv instant-notes-web/build/static/* instant-notes/app/static/
 $ mv instant-notes-web/build/* instant-notes/app/templates/
 ```
+
+## API Endpoints
+
+Minimal documentation of all API endpoints.
+
+- **API BASE ROUTE:** `/api`
+- **Content-Type** `application/json`
+
+### Authorization
+
+
+#### POST `/register/`
+
+```json
+{
+    "username": "thecosmos",
+    "password": "My.Very>Reallysecurepassword.F",
+    "email": "tc@thecosmos.space"
+}
+```
+
+#### POST `/authorize/`
+
+```json
+{
+    "username": "thecosmos",
+    "password": "My.Very>Reallysecurepassword.F"
+}
+```
+
+#### POST `/revoke/`
+
+
+#### POST `/notes/`
+
+- **Create**
+```json
+{
+    "title": "The meaning of life.",
+    "content": "print(42)",
+    "metadata": {
+        "language": "python"
+    }
+}
+```
+
+- **Update**
+```json
+{
+    "title": "The meaning of life.",
+    "content": "console.log(42);",
+    "metadata": {
+        "language": "javascript",
+        "shared": true
+    },
+    "id": "5f8311a767104fd7399d93cc"
+}
+```
+
+#### GET `/notes/`
+
+#### GET `/note/note_id/`
+
+```json
+{
+    "title": "The meaning of life.",
+    "content": "console.log(42);",
+    "metadata": {
+        "language": "javascript",
+        "shared": true
+    },
+    "id": "5f8311a767104fd7399d93cc"
+}
+```
+
+#### GET `/notes/shared/note_id/`
+
+```json
+{
+    "title": "The meaning of life.",
+    "content": "console.log(42);",
+    "metadata": {
+        "language": "javascript",
+        "shared": true
+    },
+    "id": "5f8311a767104fd7399d93cc"
+}
+```
