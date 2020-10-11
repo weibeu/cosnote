@@ -1,5 +1,7 @@
 from mongoengine import *
 
+from . import BaseDocument
+
 
 SUPPORTED_LANGUAGES = [
     "text",
@@ -81,7 +83,7 @@ class NoteMetadata(EmbeddedDocument):
     language = StringField(required=True, default="text", choices=SUPPORTED_LANGUAGES)
 
 
-class Note(Document):
+class Note(BaseDocument):
 
     _id = ObjectIdField(primary_key=True)
     title = StringField(required=True)
