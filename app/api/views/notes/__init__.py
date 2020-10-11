@@ -62,3 +62,20 @@ class Note(BaseView):
                 message="No notes found for this user with specified ID.", status=404
             )
         return note
+
+
+class SharedNote(BaseView):
+
+    ROUTE = "/notes/shared/<string:note_id>/"
+    RESPONSE_SERIALIZER = NoteSerializer
+
+    REQUIRES_AUTHORIZATION = False
+
+    @staticmethod
+    def get(note_id):
+        note = models.Note.objects(id=note_id, metadata__shared=True).first()
+        if not note:
+            return format_bad_request(
+                message="No shared notes found for with specified object ID.", status=404
+            )
+        return note
