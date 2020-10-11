@@ -154,3 +154,7 @@ Returns the note object with specified note ID only **if it has been shared**. T
     "id": "5f8311a767104fd7399d93cc"
 }
 ```
+
+GET `/supported-languages/`
+
+Basically returns list of all possible languages supported by the API.
