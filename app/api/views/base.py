@@ -32,6 +32,8 @@ def requires_authorization(view):
 class SerializerBaseSchema(marshmallow.Schema):
 
     SERIALIZE_TO_OBJECT = dict
+    SERIALIZE_TO_RESPONSE = None
+
     errors = marshmallow.fields.Dict()
 
     @marshmallow.post_load
@@ -45,6 +47,12 @@ class SerializerBaseSchema(marshmallow.Schema):
                 pk: data[pk] for pk, f in self.SERIALIZE_TO_OBJECT._fields.items() if f.primary_key
             }).first()
         return instance, data
+
+    @marshmallow.post_dump
+    def make_response(self, data, **_kwargs):
+        if not self.SERIALIZE_TO_RESPONSE:
+            return data
+        raise NotImplementedError
 
 
 class __MetaView(views.MethodViewType):
