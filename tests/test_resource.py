@@ -1,6 +1,6 @@
-from app.resource import initialize_mongo_connection
-from app.resource import models
-from app import configs
+from application.resource import initialize_mongo_connection
+from application.resource import models
+from application import configs
 
 import unittest
 

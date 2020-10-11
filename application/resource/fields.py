@@ -1,6 +1,6 @@
 import re
 
-from app import bcrypt, utils
+from application import bcrypt, utils
 from mongoengine import StringField
 
 

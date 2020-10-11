@@ -1,5 +1,5 @@
-from app import get_app
-from app import configs
+from application import get_app
+from application import configs
 
 
 app = get_app(configs)

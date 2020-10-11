@@ -1,4 +1,4 @@
-from app.resource.models.notes import Note, NoteMetadata, SUPPORTED_LANGUAGES
+from application.resource.models.notes import Note, NoteMetadata, SUPPORTED_LANGUAGES
 from marshmallow import fields, validate
 
 from .. import SerializerBaseSchema

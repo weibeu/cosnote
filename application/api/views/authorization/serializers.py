@@ -1,4 +1,4 @@
-from app.resource import models
+from application.resource import models
 from marshmallow import fields
 
 from .. import SerializerBaseSchema

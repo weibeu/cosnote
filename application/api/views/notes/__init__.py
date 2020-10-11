@@ -1,5 +1,5 @@
-from app.utils import format_bad_request
-from app.resource import models
+from application.utils import format_bad_request
+from application.resource import models
 from flask import g, current_app
 
 from .. import BaseView

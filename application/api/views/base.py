@@ -1,5 +1,5 @@
-from app.utils import format_bad_request
-from app.resource.models import User
+from application.utils import format_bad_request
+from application.resource.models import User
 
 import functools
 import mongoengine
