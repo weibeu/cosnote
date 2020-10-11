@@ -17,6 +17,7 @@ class NoteSerializer(SerializerBaseSchema):
 
     SERIALIZE_TO_OBJECT = Note
 
+    id = fields.String()
     title = fields.String(required=True)
     content = fields.String(required=True)
     metadata = fields.Nested(NoteMetadataSerializer)

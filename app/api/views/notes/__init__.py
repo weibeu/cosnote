@@ -19,3 +19,15 @@ class SaveNote(BaseView):
         g.user.notes.append(note)
         g.user.save()
         return note
+
+
+class UserNotes(BaseView):
+
+    ROUTE = "/notes/"
+
+    RESPONSE_SERIALIZER = NoteSerializer
+    SERIALIZER_KWARGS = dict(many=True)
+
+    @staticmethod
+    def get():
+        return g.user.notes
