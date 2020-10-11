@@ -45,6 +45,7 @@ class SerializerBaseSchema(marshmallow.Schema):
 
     @marshmallow.post_load
     def make_instance(self, data, **_kwargs):
+        self.context["data"] = data
         instance = None
         if self.SERIALIZE_TO_OBJECT is dict:
             instance = self.SERIALIZE_TO_OBJECT(**data)
@@ -53,7 +54,7 @@ class SerializerBaseSchema(marshmallow.Schema):
             instance = self.SERIALIZE_TO_OBJECT.objects(**{
                 pk: data[pk] for pk, f in self.SERIALIZE_TO_OBJECT._fields.items() if f.primary_key
             }).first()
-        return instance, data
+        return instance
 
     @marshmallow.post_dump
     def make_response(self, data, **_kwargs):
@@ -87,14 +88,15 @@ class BaseView(views.MethodView, metaclass=__MetaView):
         return super().as_view(cls.NAME, *args, **kwargs)
 
     def dispatch_request(self, *args, **kwargs):
+        serializer = self.REQUEST_SERIALIZER()
         try:
-            instance, data = self.REQUEST_SERIALIZER().load(request.get_json() or dict())
+            instance = serializer.load(request.get_json() or dict())
         except marshmallow.ValidationError as exc:
             return format_bad_request(exc=exc)
         except TypeError:
             ret = super().dispatch_request(*args, **kwargs)
         else:
-            ret = super().dispatch_request(instance, data, *args, **kwargs)
+            ret = super().dispatch_request(instance, serializer.context["data"], *args, **kwargs)
 
         if isinstance(ret, Response) or (isinstance(ret, tuple) and isinstance(ret[0], Response)):
             return ret
