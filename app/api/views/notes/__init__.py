@@ -15,6 +15,10 @@ class SaveNote(BaseView):
     @staticmethod
     def post(_instance, data):
         note = Note(**data)
+        try:
+            note.metadata = data["metadata"]
+        except KeyError:
+            pass
         note.save()
         g.user.notes.append(note)
         g.user.save()
