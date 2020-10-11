@@ -55,7 +55,7 @@ $ mv instant-notes-web/build/* instant-notes/app/templates/
 
 ## API Endpoints
 
-Minimal documentation of all API endpoints.
+Minimal documentation of all API endpoints. To try out the API you may make use of this [Postman Collection](https://www.getpostman.com/collections/d6511a6f788cb9dc250c).
 
 - **API BASE ROUTE:** `/api`
 - **Content-Type** `application/json`
