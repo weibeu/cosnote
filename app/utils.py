@@ -14,7 +14,7 @@ SLUG_REGEX = re.compile(r"^[-\w]+$")
 def __get_error_message(instance):
     default = "Something went wrong while validating this field."
     if isinstance(instance, collections.Sequence):
-        return next(instance, default)
+        return next(iter(instance), default)
     if isinstance(instance, collections.Mapping):
         return next(iter(instance.values()), default)
     return instance
