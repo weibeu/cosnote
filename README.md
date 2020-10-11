@@ -65,6 +65,8 @@ Minimal documentation of all API endpoints.
 
 #### POST `/register/`
 
+Registers a new user and returns the partial user object.
+
 ```json
 {
     "username": "thecosmos",
@@ -75,6 +77,8 @@ Minimal documentation of all API endpoints.
 
 #### POST `/authorize/`
 
+Authorizes or logs in the user with provided credentials.
+
 ```json
 {
     "username": "thecosmos",
@@ -84,8 +88,12 @@ Minimal documentation of all API endpoints.
 
 #### POST `/revoke/`
 
+Revokes the authorization of current user.
+
 
 #### POST `/notes/`
+
+Creates or updates an existing note based on if the note ID is specified.
 
 - **Create**
 ```json
@@ -113,7 +121,11 @@ Minimal documentation of all API endpoints.
 
 #### GET `/notes/`
 
+Returns list of all note objects of the current user.
+
 #### GET `/note/note_id/`
+
+Returns note object of a specific note.
 
 ```json
 {
@@ -128,6 +140,8 @@ Minimal documentation of all API endpoints.
 ```
 
 #### GET `/notes/shared/note_id/`
+
+Returns the note object with specified note ID only **if it has been shared**. This endpoint is open and doesn't requires authorization.
 
 ```json
 {
