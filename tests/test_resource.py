@@ -34,3 +34,7 @@ class TestNewDocuments(unittest.TestCase):
         self.test_new_note()
         user.reload()
         self.assertTrue(user.notes)
+
+    def test_get_note(self):
+        note = models.Note.objects(id="5f833b38e6a07361e4092c90").first()
+        self.assertIsNotNone(note)
