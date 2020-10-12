@@ -1,4 +1,4 @@
-# instant-notes
+# Cosnote
 A minimal web application for taking notes, built using Python Flask, ReactJS and uses MongoDB.
  
 
