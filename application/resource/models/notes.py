@@ -1,5 +1,7 @@
 from mongoengine import *
 
+import datetime
+
 from . import BaseDocument
 
 
@@ -82,6 +84,7 @@ class NoteMetadata(EmbeddedDocument):
 
     language = StringField(required=True, default="text", choices=SUPPORTED_LANGUAGES)
     shared = BooleanField(required=True, default=False)
+    last_updated = DateTimeField(required=True, default=datetime.datetime.utcnow)
 
 
 class Note(BaseDocument):

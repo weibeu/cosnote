@@ -1,6 +1,8 @@
 from application.resource.models.notes import Note, NoteMetadata, SUPPORTED_LANGUAGES
 from marshmallow import fields, validate
 
+import datetime
+
 from .. import SerializerBaseSchema
 
 
@@ -12,6 +14,7 @@ class NoteMetadataSerializer(SerializerBaseSchema):
         SUPPORTED_LANGUAGES, error="Specified language is not supported yet."
     ))
     shared = fields.Boolean(default=False)
+    last_updated = fields.DateTime(default=datetime.datetime.utcnow)
 
 
 class NoteSerializer(SerializerBaseSchema):
