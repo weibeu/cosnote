@@ -21,18 +21,17 @@ class SaveNote(BaseView):
     RESPONSE_SERIALIZER = NoteSerializer
 
     @staticmethod
-    def post(_instance, data):
-        note = get_note(data.get("id"))
-        if not note:
-            if len(g.user.notes) >= current_app.config["USER_NOTES_MAX_LIMIT"]:
-                return format_bad_request(message="This user can't create anymore notes.", status=403)
-            note = models.Note(**data)
+    def post(instance, data):
+        if not instance and len(g.user.notes) >= current_app.config["USER_NOTES_MAX_LIMIT"]:
+            return format_bad_request(message="This user can't create anymore notes.", status=403)
+        note = models.Note(**data)
         try:
             note.metadata = data["metadata"]
         except KeyError:
             pass
         note.save()
-        g.user.notes.append(note)
+        if note not in g.user.notes:
+            g.user.notes.append(note)
         g.user.save()
         return note
 
