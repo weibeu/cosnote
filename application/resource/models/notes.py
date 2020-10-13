@@ -1,5 +1,6 @@
 from mongoengine import *
 
+import bson
 import datetime
 
 from . import BaseDocument
@@ -89,6 +90,7 @@ class NoteMetadata(EmbeddedDocument):
 
 class Note(BaseDocument):
 
+    id = ObjectIdField(primary_key=True, default=bson.ObjectId)
     title = StringField(default=str())
     content = StringField(required=True)
     metadata = EmbeddedDocumentField(NoteMetadata, default=NoteMetadata)
