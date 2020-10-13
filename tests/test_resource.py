@@ -25,9 +25,8 @@ class TestNewDocuments(unittest.TestCase):
     def test_new_note(self):
         user = self._get_user("thecosmos1")
         note = models.Note(title="My first note.", content="Lorem ipsum doer solely.")
+        note.user = user
         assert note.save()
-        user.notes.append(note)
-        assert user.save()
 
     def test_get_user(self):
         user = self._get_user("thecosmos1")
@@ -36,11 +35,17 @@ class TestNewDocuments(unittest.TestCase):
         self.assertTrue(user.notes)
 
     def test_get_note(self):
-        note = models.Note.objects(id="5f833b38e6a07361e4092c90").first()
+        note = models.Note.objects(id="5f85be20e552d22101ce397c").first()
+        self.assertTrue(note.user)
         self.assertIsNotNone(note)
+
+    def test_get_notes(self):
+        user = self._get_user("thecosmos1")
+        self.assertTrue(user.notes)
+        self.assertIsInstance(user.notes, list)
 
     def test_get_shared_note(self):
         note = models.Note.objects(
-            id="5f833b38e6a07361e4092c91", metadata__shared=True,
+            id="5f85be20e552d22101ce397c", metadata__shared=True,
         ).first()
         self.assertIsNotNone(note)

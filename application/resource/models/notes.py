@@ -92,3 +92,9 @@ class Note(BaseDocument):
     title = StringField(default=str())
     content = StringField(required=True)
     metadata = EmbeddedDocumentField(NoteMetadata, default=NoteMetadata)
+
+    user = ReferenceField("User", required=True)
+
+    def save(self, *args, **kwargs):
+        self.user.save()
+        return super().save()
