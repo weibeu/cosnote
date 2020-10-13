@@ -7,10 +7,7 @@ from .serializers import NoteSerializer
 
 
 def get_note(note_id):
-    try:
-        return [n for n in g.user.notes if n.id.is_valid(note_id)][0]
-    except IndexError:
-        return
+    return models.Note.objects(id=note_id, user=g.user)
 
 
 class SaveNote(BaseView):
@@ -29,10 +26,8 @@ class SaveNote(BaseView):
             note.metadata = data["metadata"]
         except KeyError:
             pass
+        note.user = g.user
         note.save()
-        if note not in g.user.notes:
-            g.user.notes.append(note)
-        g.user.save()
         return note
 
 
