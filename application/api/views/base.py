@@ -92,14 +92,17 @@ class BaseView(views.MethodView, metaclass=__MetaView):
 
     def dispatch_request(self, *args, **kwargs):
         try:
-            serializer = self.REQUEST_SERIALIZER(**self.SERIALIZER_KWARGS)
-            instance = serializer.load(request.get_json() or dict())
-        except marshmallow.ValidationError as exc:
+            try:
+                serializer = self.REQUEST_SERIALIZER(**self.SERIALIZER_KWARGS)
+                instance = serializer.load(request.get_json() or dict())
+            except marshmallow.ValidationError as exc:
+                return format_bad_request(exc=exc)
+            except TypeError:
+                ret = super().dispatch_request(*args, **kwargs)
+            else:
+                ret = super().dispatch_request(instance, serializer.context["data"], *args, **kwargs)
+        except mongoengine.ValidationError as exc:
             return format_bad_request(exc=exc)
-        except TypeError:
-            ret = super().dispatch_request(*args, **kwargs)
-        else:
-            ret = super().dispatch_request(instance, serializer.context["data"], *args, **kwargs)
 
         if isinstance(ret, Response) or (isinstance(ret, tuple) and isinstance(ret[0], Response)):
             return ret
