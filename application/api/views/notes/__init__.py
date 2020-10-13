@@ -21,9 +21,9 @@ class SaveNote(BaseView):
     def post(instance, data):
         if not instance and len(g.user.notes) >= current_app.config["USER_NOTES_MAX_LIMIT"]:
             return format_bad_request(message="This user can't create anymore notes.", status=403)
-        note = models.Note(**data)
-        if note.user and note.user != g.user:
+        if instance and instance.user != g.user:
             return format_bad_request(message="No notes found for this user with specified ID.", status=404)
+        note = models.Note(**data)
         try:
             note.metadata = data["metadata"]
         except KeyError:
