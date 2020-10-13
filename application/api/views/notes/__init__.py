@@ -7,7 +7,7 @@ from .serializers import NoteSerializer
 
 
 def get_note(note_id):
-    return models.Note.objects(id=note_id, user=g.user)
+    return models.Note.objects(id=note_id, user=g.user).first()
 
 
 class SaveNote(BaseView):
