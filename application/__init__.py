@@ -13,7 +13,7 @@ def get_app(configs=None):
     app = Flask(__name__)
     app.config.from_object(configs)
 
-    _cors = CORS(app)
+    _cors = CORS(app, supports_credentials=True, origins=["http://localhost:3000", ])
     bcrypt.init_app(app)
     resource.initialize_mongo_connection(configs)
 
