@@ -55,7 +55,7 @@ $ mv cosnote-react/build/* cosnote/app/templates/
 
 ## API Endpoints
 
-Minimal documentation of all API endpoints. To try out the API you may make use of this [Postman Collection](https://www.getpostman.com/collections/d6511a6f788cb9dc250c).
+Minimal documentation of all API endpoints. To try out the API you may make use of this [Postman Collection](https://www.getpostman.com/collections/12c4de13945a2ac86867).
 
 - **API BASE ROUTE:** `/api`
 - **Content-Type** `application/json`
