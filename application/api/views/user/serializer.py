@@ -1,4 +1,5 @@
 from .. import SerializerBaseSchema
+from ..notes.serializers import NoteSerializer
 
 import json
 
@@ -15,3 +16,8 @@ class PartialUserSchema(SerializerBaseSchema):
 
     username = fields.String(required=True)
     preferences = UserPreferences(required=True)
+
+
+class UserSchema(PartialUserSchema):
+
+    notes = fields.List(fields.Nested(NoteSerializer))
