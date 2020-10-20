@@ -4,7 +4,7 @@ from application.resource import models
 import mongoengine
 
 from .serializers import RegisterSchema
-from ..user.serializer import UserSchema
+from ..user.serializer import PartialUserSchema
 from .. import BaseView, save_session, revoke_session
 
 
@@ -14,7 +14,7 @@ class Register(BaseView):
     REQUIRES_AUTHORIZATION = False
 
     REQUEST_SERIALIZER = RegisterSchema
-    RESPONSE_SERIALIZER = UserSchema
+    RESPONSE_SERIALIZER = PartialUserSchema
 
     @staticmethod
     def post(instance, data):
@@ -35,7 +35,7 @@ class Authorize(BaseView):
     REQUIRES_AUTHORIZATION = False
 
     REQUEST_SERIALIZER = RegisterSchema
-    RESPONSE_SERIALIZER = UserSchema
+    RESPONSE_SERIALIZER = PartialUserSchema
 
     @staticmethod
     def post(instance, data):

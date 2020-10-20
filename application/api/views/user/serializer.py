@@ -11,7 +11,7 @@ class UserPreferences(fields.Dict):
         return super()._serialize(json.loads(value.to_json()), *args, **kwargs)
 
 
-class UserSchema(SerializerBaseSchema):
+class PartialUserSchema(SerializerBaseSchema):
 
     username = fields.String(required=True)
     preferences = UserPreferences(required=True)
