@@ -14,7 +14,7 @@ def save_session(username, permanent=True):
 
 
 def revoke_session():
-    session.pop(get_username(), None)
+    session.clear()
 
 
 def get_username():
