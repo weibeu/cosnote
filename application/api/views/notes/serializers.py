@@ -10,7 +10,7 @@ class NoteMetadataSerializer(SerializerBaseSchema):
 
     SERIALIZE_TO_OBJECT = NoteMetadata
 
-    language = fields.String(default="text", validate=validate.OneOf(
+    language = fields.String(default="plaintext", validate=validate.OneOf(
         SUPPORTED_LANGUAGES, error="Specified language is not supported yet."
     ))
     shared = fields.Boolean(default=False)

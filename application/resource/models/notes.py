@@ -7,7 +7,6 @@ from . import BaseDocument
 
 
 SUPPORTED_LANGUAGES = [
-    "text",
     "abap",
     "aes",
     "apex",
@@ -83,7 +82,7 @@ SUPPORTED_LANGUAGES = [
 
 class NoteMetadata(EmbeddedDocument):
 
-    language = StringField(required=True, default="text", choices=SUPPORTED_LANGUAGES)
+    language = StringField(required=True, default="plaintext", choices=SUPPORTED_LANGUAGES)
     shared = BooleanField(required=True, default=False)
     last_updated = DateTimeField(required=True, default=datetime.datetime.utcnow)
 
