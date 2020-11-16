@@ -10,7 +10,7 @@ from mongoengine import EmbeddedDocumentField, BooleanField, EmailField
 
 class UserPreferences(EmbeddedDocument):
 
-    developer = BooleanField(default=False)
+    developer = BooleanField(default=True)
 
 
 class User(BaseDocument):
